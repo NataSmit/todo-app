@@ -9,7 +9,7 @@ export default function TaskList() {
 
   return (
     <div>
-      <ul className="list">{todos && todos.map((todo) => <Todo todo={todo} />)}</ul>
+      <ul className="list">{todos && todos.map((todo) => <Todo todo={todo} key={todo.id}/>)}</ul>
     </div>
   );
 }

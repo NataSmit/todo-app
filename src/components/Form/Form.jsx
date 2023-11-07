@@ -6,9 +6,9 @@ import { addTodo } from "../../store/slices/TaskSlice";
 
 export default function Form() {
   const dispatch = useDispatch();
-  const [todo, setTodo] = useState({});
+  const [todo, setTodo] = useState('');
   function handleInputChange(e) {
-    setTodo({ title: e.target.value, completed: false });
+    setTodo(e.target.value);
   }
 
   console.log(todo);
@@ -16,12 +16,12 @@ export default function Form() {
   function saveTodo(e) {
     e.preventDefault();
     dispatch(addTodo(todo));
-    setTodo({title: '', completed: false});
+    setTodo('');
   }
 
   return (
     <form onSubmit={saveTodo}>
-      <TextField value={todo.title} onChange={handleInputChange} />
+      <TextField value={todo} onChange={handleInputChange} />
     </form>
   );
 }
