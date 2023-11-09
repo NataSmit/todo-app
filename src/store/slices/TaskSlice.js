@@ -22,7 +22,8 @@ export const todoSlice = createSlice({
         comment: '',
       };
       state.todos.push(newTodo);
-      saveTaskToLS(newTodo)
+      // saveTaskToLS(newTodo)
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos))
     },
     deleteTodo: (state, action) => {
       console.log('action.payload delete', action.payload)
@@ -53,11 +54,17 @@ export const todoSlice = createSlice({
       
     },
     changeTodo: (state, action) => {
-      const selectedTodo = state.todos.find(
-        (todo) => todo.id === action.payload.id
-      );
-      selectedTodo.title = action.payload.title;
-      selectedTodo.completed = action.payload.completed;
+      // const selectedTodo = state.todos.find(
+      //   (todo) => todo.id === action.payload.id
+      // );
+      // selectedTodo.title = action.payload.title;
+      // selectedTodo.completed = action.payload.completed;
+
+      state.todos = todos.map((todo) => {
+        if (todo.id === action.payload.id) {
+          return {...todo, title: action.payload.title, completed: action.payload.completed}
+        } else return todo
+      })
       localStorage.setItem("todoHistory", JSON.stringify(state.todos))
     },
     getTodosFromLS: (state, action) => {
@@ -68,8 +75,9 @@ export const todoSlice = createSlice({
     },
     addComment: (state, action) => {
       console.log('action payload comment', action.payload)
-      state.todos = todos.map((todo) => {
+      state.todos = state.todos.map((todo) => {
        if (todo.id === action.payload.id) {
+        console.log(todo)
         return {...todo, comment: action.payload.comment}
        } else return todo
       })

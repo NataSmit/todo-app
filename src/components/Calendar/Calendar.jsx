@@ -43,7 +43,10 @@ export default function Calendar() {
   console.log("endOfMonth", endOfMonth);
   const intervalLength = Interval.fromDateTimes(startOfMonth, endOfMonth).count('days')
   console.log('intervalLength', intervalLength)
-  const arr = Array(intervalLength)
+  const arr = []
+  for (let i = 0; i < intervalLength; i++) {
+    arr.push(DateTime.fromJSDate(startOfMonth).plus({ day: i }).toJSDate())
+}
 
   return (
     <div className="calendar">
@@ -55,7 +58,7 @@ export default function Calendar() {
         </div>
         <div className="calenderBody">
           {weekNames.map((weekName) => (<div className="calenderGridBox">{weekName}</div>))}
-          {Array(intervalLength).map((_, i) => (<div className="calenderGridBox">{i}</div>))}
+          {arr.map((_, i) => (<div className="calenderGridBox">{i}</div>))}
           
         </div>
       </div>
