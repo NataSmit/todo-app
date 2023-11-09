@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import "./Todo.css";
-import Sidebar from "../Sidebar/Sidebar";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import { useSelector, useDispatch } from "react-redux";
 import {
   handleTodoInfoBoxClick,
   toggleComplete,
+  test
 } from "../../store/slices/TaskSlice";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -25,12 +23,12 @@ export default function Todo({ todo }) {
   }
 
   function handleCheckboxClick(e) {
-    
     e.stopPropagation();
   }
 
   function handleTodoClick(e, id) {
     dispatch(handleTodoInfoBoxClick({ id }));
+    
   }
 
 

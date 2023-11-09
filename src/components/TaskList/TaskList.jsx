@@ -10,7 +10,6 @@ export default function TaskList() {
   console.log("todos from list", todos);
 
   return (
-    
     <Box sx={{ flexGrow: 1, flexShrink: 1, flexBasis: "auto" }}>
       <List >
         {todos.map((todo) => (

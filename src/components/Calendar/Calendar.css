@@ -1,0 +1,26 @@
+.calendar{
+  width: 350px;
+  height: 300px;
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+.calenderHeader {
+  display: flex;
+  justify-content: space-around;
+}
+
+.calenderBody {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendarWeekNames {
+  display: flex;
+  justify-content: space-between;
+}
+
+.calenderGridBox {
+  border: 1px solid grey;
+}
+
