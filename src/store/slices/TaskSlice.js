@@ -1,17 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { saveTaskToLS, getTodosFromLS, saveChangedTaskToLS } from '../../utils/utils'
+import {
+  saveTaskToLS,
+  getTodosFromLS,
+  saveChangedTaskToLS,
+} from "../../utils/utils";
 
 const todos = getTodosFromLS();
 //const todos = [];
 
-console.log("todos", todos);
 export const todoSlice = createSlice({
   name: "todos",
   initialState: {
     todos,
     todoInfoBoxVisible: false,
     selectedTodo: null,
-  
   },
   reducers: {
     addTodo: (state, action) => {
@@ -19,39 +21,52 @@ export const todoSlice = createSlice({
         id: Number((Math.random() * 100).toFixed(0)),
         title: action.payload,
         completed: false,
-        comment: '',
+        comment: "",
       };
       state.todos.push(newTodo);
       // saveTaskToLS(newTodo)
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos))
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
     },
     deleteTodo: (state, action) => {
-      console.log('action.payload delete', action.payload)
+      console.log("action.payload delete", action.payload);
       state.todos = state.todos.filter((todo) => todo.id !== action.payload.id);
-      state.todoInfoBoxVisible = false
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos))
+      state.todoInfoBoxVisible = false;
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
     },
     toggleComplete: (state, action) => {
-     
       if (state.selectedTodo) {
-        console.log('selectedToDoState change')
-        state.selectedTodo.completed = !state.selectedTodo.completed
+        
+        state.selectedTodo.completed = !state.selectedTodo.completed;
       }
-      
+
       state.todos = state.todos.map((todo) => {
         if (todo.id === action.payload.id) {
-          return {...todo, completed: !todo.completed}
-        } else return todo
-      })
+          return { ...todo, completed: !todo.completed };
+        } else return todo;
+      });
 
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos))
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
     },
     handleTodoInfoBoxClick: (state, action) => {
-      state.todoInfoBoxVisible = !state.todoInfoBoxVisible;
-      state.selectedTodo = state.todos.find(
-        (todo) => todo.id === action.payload.id
-      );
-      
+      // state.todoInfoBoxVisible = !state.todoInfoBoxVisible;
+      // state.selectedTodo = state.todos.find(
+      //   (todo) => todo.id === action.payload.id
+      // );
+      if (!state.todoInfoBoxVisible) {
+        state.todoInfoBoxVisible = true;
+        state.selectedTodo = state.todos.find(
+          (todo) => todo.id === action.payload.id
+        );
+      } else {
+        if (state.selectedTodo.id === action.payload.id) {
+          state.todoInfoBoxVisible = false
+        } else {
+          state.selectedTodo = state.todos.find(
+            (todo) => todo.id === action.payload.id
+          );
+        }
+        
+      }
     },
     changeTodo: (state, action) => {
       // const selectedTodo = state.todos.find(
@@ -62,28 +77,30 @@ export const todoSlice = createSlice({
 
       state.todos = todos.map((todo) => {
         if (todo.id === action.payload.id) {
-          return {...todo, title: action.payload.title, completed: action.payload.completed}
-        } else return todo
-      })
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos))
+          return {
+            ...todo,
+            title: action.payload.title,
+            completed: action.payload.completed,
+          };
+        } else return todo;
+      });
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
     },
     getTodosFromLS: (state, action) => {
-      state.todos = getTodosFromLS()
+      state.todos = getTodosFromLS();
     },
     closeTodoInfoBox: (state) => {
-      state.todoInfoBoxVisible = false
+      state.todoInfoBoxVisible = false;
     },
     addComment: (state, action) => {
-      console.log('action payload comment', action.payload)
+      console.log("action payload comment", action.payload);
       state.todos = state.todos.map((todo) => {
-       if (todo.id === action.payload.id) {
-        console.log(todo)
-        return {...todo, comment: action.payload.comment}
-       } else return todo
-      })
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos))
+        if (todo.id === action.payload.id) {
+          return { ...todo, comment: action.payload.comment };
+        } else return todo;
+      });
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
     },
-  
   },
 });
 
@@ -95,5 +112,5 @@ export const {
   changeTodo,
   closeTodoInfoBox,
   addComment,
-  test
+  test,
 } = todoSlice.actions;

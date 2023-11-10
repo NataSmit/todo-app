@@ -12,7 +12,6 @@ import DueDateForm from '../DueDateForm/DueDateForm'
 export default function TodoInfoBox() {
   const selectedTodo = useSelector((state) => state.selectedTodo);
   const dispatch = useDispatch();
-  console.log("selectedTodo", selectedTodo);
   function handleTodoInfoBoxClose() {
     dispatch(closeTodoInfoBox());
   }

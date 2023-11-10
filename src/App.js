@@ -30,7 +30,6 @@ function App() {
           >
             <TaskList />
             <Form />
-            <Calendar/>
           </Container>
           <Container sx={{ display: todoInfoBoxVisible ? 'block' : 'none', flexBasis: '35%', py: 1, backgroundColor: 'aliceblue'}}>
             <TodoInfoBox />

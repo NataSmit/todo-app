@@ -1,9 +1,18 @@
 .calendar{
-  width: 350px;
-  height: 300px;
+  width: 250px;
+  
   border: 1px solid grey;
   padding: 10px;
 }
+
+.calendarVisible {
+  display: block
+}
+
+.calendarHidden {
+  display: none;
+}
+
 
 .calenderHeader {
   display: flex;
@@ -14,6 +23,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
+
 
 .calendarWeekNames {
   display: flex;
