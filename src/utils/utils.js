@@ -1,3 +1,5 @@
+import { months } from "./constants/calendarConstants"
+
 export function getTodosFromLS() {
   let todoHistory = [];
   if (localStorage["todoHistory"]) {
@@ -22,3 +24,19 @@ export function saveChangedTaskToLS(id, changedTodo) {
   console.log('filteredTodos 2', filteredTodos)
   localStorage.setItem("todoHistory", JSON.stringify(todoHistory));
 }
+
+export function getDates(date) {
+  
+  const daysInMonth = date.daysInMonth
+  const arr = [];
+  for (let i = 1; i <= daysInMonth; i++) {
+    arr.push(i);
+  }
+  
+  return arr
+}
+
+export const getMonthName = (index) => {
+    return months.filter((item, id) => id === index )[0]
+}
+

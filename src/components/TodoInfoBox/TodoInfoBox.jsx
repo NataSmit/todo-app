@@ -20,6 +20,8 @@ export default function TodoInfoBox() {
     dispatch(deleteTodo({id}))
   }
 
+  console.log('selectedTodo', selectedTodo)
+
   return (
     <Box sx={{display: 'flex', flexDirection: 'column', height: '100%'}}>
       <Box sx={{flexGrow: 1, flexShrink: 1, flexBasis: "auto"}}>
@@ -28,7 +30,7 @@ export default function TodoInfoBox() {
       </IconButton>
         {selectedTodo && <ChangeTodoForm title={selectedTodo.title} id={selectedTodo.id} completed={selectedTodo.completed || false} comment={selectedTodo.comment}/>}
         {selectedTodo && <AddCommentForm title={selectedTodo.title} id={selectedTodo.id} completed={selectedTodo.completed || false} comment={selectedTodo.comment}  />}
-        {selectedTodo && <DueDateForm />}
+        {selectedTodo && <DueDateForm id={selectedTodo.id} dueDate={selectedTodo.dueDate}/>}
       </Box>
       <Box >
       <IconButton aria-label="delete" color="primary" onClick={() => handleTodoDelete(selectedTodo.id)}>

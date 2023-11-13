@@ -1,77 +1,51 @@
 import { DateTime, Interval } from "luxon";
 import "./Calendar.css";
-
+import {getDates, getMonthName} from '../../utils/utils'
 import React, { useEffect, useState } from "react";
+import classNames from "classnames";
+import { weekNames } from '../../utils/constants/calendarConstants'
+import CalendarCell from './CalendarCell/CalendarCell'
+import { useDispatch, useSelector } from "react-redux";
+import { addDueDate } from '../../store/slices/TaskSlice'
 
-export default function Calendar({currentDate, calendarVisible, onChange}) {
-  const months = [
-    "Январь",
-    "Февраль",
-    "Март",
-    "Апрель",
-    "Май",
-    "Июнь",
-    "Июль",
-    "Август",
-    "Сентябрь",
-    "Октябрь",
-    "Ноябрь",
-    "Декабрь",
-  ];
-  const weekNames = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
-  const days = [];
-
-  const [date, setDate] = useState(currentDate);
-  console.log('prop', currentDate)
+export default function Calendar({currentDate, calendarVisible, onChange, id, dueDate, setCalendarVisible}) {
+  
+  const calendarClass = classNames({
+    calendarVisible: calendarVisible,
+    calendarHidden: !calendarVisible,
+  })
+  const calendarCellClass = classNames({
+    calendarCell: true,
+    calendarCellCurrentDay: currentDate.toLocaleString() === DateTime.now().toLocaleString() ,
+  })
+  //const [dueDate, setDueDate] = useState(currentDate);
   
   // const [testDate, setTestDate] = useState(DateTime.now()) 
-  // console.log("luxon", testDate.startOf('month').toJSDate().getDay());
+  //  console.log("day current ", currentDate.toLocaleString({month: 'long', year: 'numeric'}));
+  // console.log("day now ", DateTime.now().toLocaleString());
   // const cellsBefore = testDate.startOf('month').toJSDate().getDay() - 1
   // const cellsAfter = testDate.endOf('month').toJSDate().getDay() - 1
   // console.log('cellsAfter', cellsAfter)
-
+  const dispatch = useDispatch()
   const [testDate, setTestDate] = useState(currentDate) 
-  console.log("luxon", testDate.startOf('month').toJSDate().getDay());
-  // const cellsBefore = testDate.startOf('month').weekday - 1
-  // const cellsAfter = 7 - testDate.endOf('month').weekday
+  // console.log("luxon", testDate.startOf('month').toJSDate().getDay());
   const [cellsBefore, setSellsBefore] = useState(currentDate.startOf('month').weekday - 1)
   const [cellsAfter, setSellsAfter] = useState(7 - currentDate.endOf('month').weekday)
-  console.log('cellsBefore', cellsBefore)
-  console.log('cellsAfter', cellsAfter)
-  console.log('!!!', Interval.before(testDate, {month: 1}).toLocaleString())
-  console.log('<<<<', testDate.daysInMonth)
-  console.log('???', testDate.minus({month: 1}).toFormat('LLLL yyyy'))
-  const [prevMonth, setPrevMonth] = useState()
+  // console.log('cellsBefore', cellsBefore)
+  // console.log('cellsAfter', cellsAfter)
+  // console.log('!!!', Interval.before(testDate, {month: 1}).toLocaleString())
+  // console.log('<<<<', testDate.daysInMonth)
+  // console.log('???', testDate.minus({month: 1}).toFormat('LLLL yyyy'))
+  //const [prevMonth, setPrevMonth] = useState()
 
   function handleBackBtnClick() {
     onChange(currentDate.minus({month: 1}))
   }
 
-  function handleForwardkBtnClick() {
+  function handleForwardBtnClick() {
     onChange(currentDate.plus({month: 1}))
   }
-
-  console.log('prevMonth', prevMonth)
-
-  function getDates(date) {
-    const startOfMonth = date.startOf("month");
-    const endOfMonth = date.endOf("month");
-    console.log('startOfMonth', startOfMonth)
-    console.log('endOfMonth', endOfMonth)
-    console.log('weekday start', startOfMonth.weekday)
-    console.log('weekday end', endOfMonth.weekday)
-    const intervalLength = Interval.fromDateTimes(
-      startOfMonth,
-      endOfMonth
-    ).count("days");
-    const arr = [];
-    for (let i = 0; i < intervalLength; i++) {
-      const date = i + 1
-      arr.push(date);
-    }
-    
-    return arr
-  }
+  
   const [dates, setDates] = useState()
   useEffect(() => {
     setDates(getDates(currentDate))
@@ -79,42 +53,41 @@ export default function Calendar({currentDate, calendarVisible, onChange}) {
     setSellsAfter(7 - currentDate.endOf('month').weekday)
   }, [currentDate])
 
-  // const startOfMonth = date.startOf("month");
-  // const endOfMonth = date.endOf("month");
-  // const diff = endOfMonth.diff(startOfMonth, "days"); // хрень
-  
-  // console.log("startOfMonth", startOfMonth);
-  // console.log("endOfMonth", endOfMonth);
-  // const intervalLength = Interval.fromDateTimes(startOfMonth, endOfMonth).count(
-  //   "days"
-  // );
-  // console.log("intervalLength", intervalLength);
-  // const arr = [];
-  // for (let i = 0; i < intervalLength; i++) {
-  //   const date = i + 1
-  //   console.log("date", date);
-  //   arr.push(date);
-  // }
+  function handleCalendarCellClick(date) {
+    onChange(DateTime.fromObject({month: currentDate.month, day: date}))
+  }
 
+  function handleDueDateSubmit() {
+    dispatch(addDueDate({id, dueDate: currentDate.toISO()}))
+    setCalendarVisible(false)
+  }
+
+  
 
   return (
-    <div className={`calendar ${calendarVisible ? 'calendarVisible' : 'calendarHidden'}`}>
+    <div className={calendarClass}>
       <div className="calendarContainer">
-        <div className="calenderHeader">
+        <div className="calendarHeader">
           <div onClick={handleBackBtnClick} >{"<"}</div>
-          <div>{currentDate.toFormat('LLLL yyyy')}</div>
-          <div onClick={handleForwardkBtnClick}>{">"}</div>
+          <div>{`${getMonthName(currentDate.toJSDate().getMonth())} ${currentDate.year}`}</div>
+          <div onClick={handleForwardBtnClick}>{">"}</div>
         </div>
-        <div className="calenderBody">
+        <div className="calendarBody">
           {weekNames.map((weekName) => (
-            <div className="calenderGridBox">{weekName}</div>
+            <div className="calendarCell" key={weekName}>{weekName}</div>
           ))}
-          {Array.from({length: cellsBefore}).map((v) => (<div className="calenderGridBox"></div>))}
-          {dates && dates.map((date) => (
-            <div className="calenderGridBox">{date}</div>
-          ))}
-          {Array.from({length: cellsAfter}).map((v) => (<div className="calenderGridBox"></div>))}
+          {Array.from({length: cellsBefore}).map((_, i) => (<CalendarCell key={i}/>))}
+          {dates && dates.map((date) => {
+            const isCurrentDate = date === DateTime.now().day && currentDate.month === DateTime.now().month
+            const selected = date === currentDate.day 
+            return ( <CalendarCell key={date} date={date} isCurrentDate={isCurrentDate} handleCalendarCellClick={handleCalendarCellClick} selected={selected} />)
+          })}
+          {Array.from({length: cellsAfter}).map((_, i) => (<CalendarCell key={i}/>))}
         </div>
+      </div>
+      <div className="calendarButtons">
+        <button onClick={handleDueDateSubmit}>Сохранить</button>
+        <button>Отмена</button>
       </div>
     </div>
   );

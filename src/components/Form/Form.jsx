@@ -12,17 +12,12 @@ export default function Form({title}) {
     setTodo(e.target.value);
   }
 
-  console.log(todo);
-
   function saveTodo(e) {
     e.preventDefault();
     dispatch(addTodo(todo));
     setTodo('');
   }
 
-  function handleChangeTodo() {
-    
-  }
 
   return (
     <form onSubmit={saveTodo} >

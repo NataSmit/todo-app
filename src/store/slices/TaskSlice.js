@@ -22,6 +22,7 @@ export const todoSlice = createSlice({
         title: action.payload,
         completed: false,
         comment: "",
+        dueDate: ""
       };
       state.todos.push(newTodo);
       // saveTaskToLS(newTodo)
@@ -69,12 +70,6 @@ export const todoSlice = createSlice({
       }
     },
     changeTodo: (state, action) => {
-      // const selectedTodo = state.todos.find(
-      //   (todo) => todo.id === action.payload.id
-      // );
-      // selectedTodo.title = action.payload.title;
-      // selectedTodo.completed = action.payload.completed;
-
       state.todos = todos.map((todo) => {
         if (todo.id === action.payload.id) {
           return {
@@ -101,6 +96,26 @@ export const todoSlice = createSlice({
       });
       localStorage.setItem("todoHistory", JSON.stringify(state.todos));
     },
+    addDueDate: (state, action) => {
+      console.log('addDueDate payload', action.payload)
+      state.todos = state.todos.map((todo) => {
+        if (todo.id === action.payload.id) {
+          return { ...todo, dueDate: action.payload.dueDate };
+        } else return todo;
+      });
+      state.selectedTodo = {...state.selectedTodo, dueDate: action.payload.dueDate }
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+    },
+    deleteDueDate: (state, action) => {
+      console.log('deleteDueDate payload', action.payload)
+      state.todos = state.todos.map((todo) => {
+        if (todo.id === action.payload.id) {
+          return { ...todo, dueDate: '' };
+        } else return todo;
+      });
+      state.selectedTodo = {...state.selectedTodo, dueDate: '' }
+      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+    }
   },
 });
 
@@ -113,4 +128,6 @@ export const {
   closeTodoInfoBox,
   addComment,
   test,
+  addDueDate,
+  deleteDueDate
 } = todoSlice.actions;
