@@ -22,6 +22,7 @@ export default function Calendar({
     calendarVisible: calendarVisible,
     calendarHidden: !calendarVisible,
   });
+  const [selectedDate, setSelectedDate] = useState(false)
 
   const [cellsBefore, setSellsBefore] = useState(
     currentDate.startOf("month").weekday - 1
@@ -36,6 +37,10 @@ export default function Calendar({
     setSellsAfter(7 - currentDate.endOf("month").weekday);
   }, [currentDate]);
 
+  useEffect(() => {
+    setSelectedDate(false)
+  }, [currentDate.month])
+
   function handleBackBtnClick() {
     onChange(currentDate.minus({ month: 1 }));
   }
@@ -46,6 +51,7 @@ export default function Calendar({
 
   function handleCalendarCellClick(date) {
     onChange(DateTime.fromObject({ month: currentDate.month, day: date }));
+    setSelectedDate(true)
   }
 
   function handleDueDateSubmit() {
@@ -61,11 +67,11 @@ export default function Calendar({
     <div className={calendarClass}>
       <div className="calendarContainer">
         <div className="calendarHeader">
-          <div onClick={handleBackBtnClick}>{"<"}</div>
+          <button onClick={handleBackBtnClick} className="calendarNavigationButton">{"<"}</button>
           <div>{`${getMonthName(currentDate.toJSDate().getMonth())} ${
             currentDate.year
           }`}</div>
-          <div onClick={handleForwardBtnClick}>{">"}</div>
+          <button onClick={handleForwardBtnClick} className="calendarNavigationButton">{">"}</button>
         </div>
         <div className="calendarBody">
           {weekNames.map((weekName) => (
@@ -81,14 +87,14 @@ export default function Calendar({
               const isCurrentDate =
                 date === DateTime.now().day &&
                 currentDate.month === DateTime.now().month;
-              const selected = date === currentDate.day;
+              const isSelected = date === currentDate.day && selectedDate;
               return (
                 <CalendarCell
                   key={date}
                   date={date}
                   isCurrentDate={isCurrentDate}
                   handleCalendarCellClick={handleCalendarCellClick}
-                  selected={selected}
+                  selected={isSelected}
                 />
               );
             })}

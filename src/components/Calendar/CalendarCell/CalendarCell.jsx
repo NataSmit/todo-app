@@ -1,5 +1,6 @@
 import React from "react";
 import "./CalendarCell.css";
+import classNames from "classnames";
 
 export default function CalendarCell({
   date,
@@ -7,11 +8,15 @@ export default function CalendarCell({
   handleCalendarCellClick,
   selected,
 }) {
+  const calendarCellClass = classNames({
+    calendarCell: true,
+    calendarCellCurrentDay: isCurrentDate,
+    calendarCellSelected: selected,
+  });
+
   return (
     <div
-      className={`calendarCell ${
-        isCurrentDate ? "calendarCellCurrentDay" : ""
-      } ${selected ? "calendarCellSelected" : ""}`}
+      className={calendarCellClass}
       onClick={
         handleCalendarCellClick
           ? () => handleCalendarCellClick(date)
