@@ -30,16 +30,5 @@
   justify-content: space-between;
 }
 
-.calendarCell {
-  border: 1px solid grey;
-}
-
-.calendarCellCurrentDay {
- background-color: cadetblue;
-}
-
-.calendarCellSelected {
-  border: 2px solid blue
- }
 
 

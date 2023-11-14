@@ -1,17 +1,22 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Todo from "../Todo/Todo";
 import "./TaskList.css";
 import List from "@mui/material/List";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
+import { getTodosFromLocalStorage } from "../../store/slices/TaskSlice";
 
 export default function TaskList() {
   const todos = useSelector((state) => state.todos);
-  console.log("todos from list", todos);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getTodosFromLocalStorage());
+  }, [dispatch]);
 
   return (
     <Box sx={{ flexGrow: 1, flexShrink: 1, flexBasis: "auto" }}>
-      <List >
+      <List>
         {todos.map((todo) => (
           <Todo todo={todo} key={todo.id} />
         ))}

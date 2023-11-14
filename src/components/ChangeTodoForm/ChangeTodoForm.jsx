@@ -1,14 +1,17 @@
-import { FormControl, Input, InputAdornment, TextField } from "@mui/material";
+import { FormControl, InputAdornment } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import { useSelector, useDispatch } from "react-redux";
-import { changeTodo, toggleComplete, addComment } from "../../store/slices/TaskSlice";
+import { useDispatch } from "react-redux";
+import { changeTodo, toggleComplete } from "../../store/slices/TaskSlice";
 
-export default function ChangeTodoForm({ title, completed, comment, id }) {
-  const [todo, setTodo] = useState(title);
-  
+export default function ChangeTodoForm({ title, completed, comment, id, dueDate }) {
   const dispatch = useDispatch();
+  const [todo, setTodo] = useState(title);
+
+  useEffect(() => {
+    setTodo(title);
+  }, [title]);
 
   function handleFormSubmit(e) {
     e.preventDefault();
@@ -17,30 +20,19 @@ export default function ChangeTodoForm({ title, completed, comment, id }) {
         title: todo,
         id,
         completed,
-        comment
+        comment,
+        dueDate
       })
     );
   }
-
 
   function handleInputChange(e) {
     setTodo(e.target.value);
   }
 
-  useEffect(() => {
-    setTodo(title);
-  }, [title]);
-
-
-  useEffect(() => {
-    console.log(completed)
-  }, [completed])
-
   function handleToggle(event) {
-    console.log(id)
     dispatch(toggleComplete({ id }));
   }
-
 
   function onBlur() {
     dispatch(
@@ -48,14 +40,14 @@ export default function ChangeTodoForm({ title, completed, comment, id }) {
         title: todo,
         id,
         completed,
-        comment
+        comment,
+        dueDate
       })
     );
   }
 
   return (
     <form onSubmit={handleFormSubmit}>
-
       <FormControl variant="standard">
         <OutlinedInput
           id="input-with-icon-adornment"
@@ -71,13 +63,11 @@ export default function ChangeTodoForm({ title, completed, comment, id }) {
               <Checkbox
                 checked={completed}
                 onChange={(event, id) => handleToggle(id)}
-                
               />
             </InputAdornment>
           }
         />
       </FormControl>
     </form>
-    
   );
 }

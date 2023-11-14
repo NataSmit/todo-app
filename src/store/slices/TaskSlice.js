@@ -1,12 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  saveTaskToLS,
-  getTodosFromLS,
-  saveChangedTaskToLS,
-} from "../../utils/utils";
+import { getTodosFromLS, saveTodosToLS } from "../../utils/utils";
 
 const todos = getTodosFromLS();
-//const todos = [];
 
 export const todoSlice = createSlice({
   name: "todos",
@@ -22,21 +17,18 @@ export const todoSlice = createSlice({
         title: action.payload,
         completed: false,
         comment: "",
-        dueDate: ""
+        dueDate: "",
       };
       state.todos.push(newTodo);
-      // saveTaskToLS(newTodo)
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+      saveTodosToLS(state.todos);
     },
     deleteTodo: (state, action) => {
-      console.log("action.payload delete", action.payload);
       state.todos = state.todos.filter((todo) => todo.id !== action.payload.id);
       state.todoInfoBoxVisible = false;
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+      saveTodosToLS(state.todos);
     },
     toggleComplete: (state, action) => {
       if (state.selectedTodo) {
-        
         state.selectedTodo.completed = !state.selectedTodo.completed;
       }
 
@@ -46,13 +38,9 @@ export const todoSlice = createSlice({
         } else return todo;
       });
 
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+      saveTodosToLS(state.todos);
     },
     handleTodoInfoBoxClick: (state, action) => {
-      // state.todoInfoBoxVisible = !state.todoInfoBoxVisible;
-      // state.selectedTodo = state.todos.find(
-      //   (todo) => todo.id === action.payload.id
-      // );
       if (!state.todoInfoBoxVisible) {
         state.todoInfoBoxVisible = true;
         state.selectedTodo = state.todos.find(
@@ -60,17 +48,16 @@ export const todoSlice = createSlice({
         );
       } else {
         if (state.selectedTodo.id === action.payload.id) {
-          state.todoInfoBoxVisible = false
+          state.todoInfoBoxVisible = false;
         } else {
           state.selectedTodo = state.todos.find(
             (todo) => todo.id === action.payload.id
           );
         }
-        
       }
     },
     changeTodo: (state, action) => {
-      state.todos = todos.map((todo) => {
+      state.todos = state.todos.map((todo) => {
         if (todo.id === action.payload.id) {
           return {
             ...todo,
@@ -79,43 +66,49 @@ export const todoSlice = createSlice({
           };
         } else return todo;
       });
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+      state.selectedTodo = {
+        ...state.selectedTodo,
+        title: action.payload.title,
+        completed: action.payload.completed,
+      };
+      saveTodosToLS(state.todos);
     },
-    getTodosFromLS: (state, action) => {
+    getTodosFromLocalStorage: (state) => {
       state.todos = getTodosFromLS();
     },
     closeTodoInfoBox: (state) => {
       state.todoInfoBoxVisible = false;
     },
     addComment: (state, action) => {
-      console.log("action payload comment", action.payload);
       state.todos = state.todos.map((todo) => {
         if (todo.id === action.payload.id) {
           return { ...todo, comment: action.payload.comment };
         } else return todo;
       });
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+      state.selectedTodo = {...state.selectedTodo, comment: action.payload.comment}
+      saveTodosToLS(state.todos);
     },
     addDueDate: (state, action) => {
-      console.log('addDueDate payload', action.payload)
       state.todos = state.todos.map((todo) => {
         if (todo.id === action.payload.id) {
           return { ...todo, dueDate: action.payload.dueDate };
         } else return todo;
       });
-      state.selectedTodo = {...state.selectedTodo, dueDate: action.payload.dueDate }
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
+      state.selectedTodo = {
+        ...state.selectedTodo,
+        dueDate: action.payload.dueDate,
+      };
+      saveTodosToLS(state.todos);
     },
     deleteDueDate: (state, action) => {
-      console.log('deleteDueDate payload', action.payload)
       state.todos = state.todos.map((todo) => {
         if (todo.id === action.payload.id) {
-          return { ...todo, dueDate: '' };
+          return { ...todo, dueDate: "" };
         } else return todo;
       });
-      state.selectedTodo = {...state.selectedTodo, dueDate: '' }
-      localStorage.setItem("todoHistory", JSON.stringify(state.todos));
-    }
+      state.selectedTodo = { ...state.selectedTodo, dueDate: "" };
+      saveTodosToLS(state.todos);
+    },
   },
 });
 
@@ -127,7 +120,7 @@ export const {
   changeTodo,
   closeTodoInfoBox,
   addComment,
-  test,
   addDueDate,
-  deleteDueDate
+  deleteDueDate,
+  getTodosFromLocalStorage,
 } = todoSlice.actions;

@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import Calendar from "../Calendar/Calendar";
-import { DateTime, Interval } from "luxon";
+import { DateTime } from "luxon";
 import "./DueDateForm.css";
 import DueDateOptions from "../Calendar/DueDateOptions/DueDateOptions";
 import { Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch } from "react-redux";
 import { addDueDate, deleteDueDate } from "../../store/slices/TaskSlice";
+import { getDueDateValue } from "../../utils/utils";
 
 export default function DueDateForm({ id, dueDate }) {
-  //const [date, setDate] = useState();
   const dispatch = useDispatch();
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [currentDate, setCurrentDate] = useState(DateTime.now());
   const [dueDateOptionsVisible, setDueDateOptionsVisible] = useState(false);
-  console.log("dueDate", dueDate);
 
   function handleCalendarVisibility() {
-    console.log(" handleCalendarVisibility clicked!!!");
     setDueDateOptionsVisible(false);
     setCalendarVisible(!calendarVisible);
   }
@@ -30,14 +28,27 @@ export default function DueDateForm({ id, dueDate }) {
     dispatch(deleteDueDate({ id }));
   }
 
-  const dueDateValue = `Срок: ${
-    dueDate &&
-    DateTime.fromISO(dueDate).toLocaleString({
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-    })
-  }`;
+  function setDueDateToday() {
+    dispatch(addDueDate({ id: id, dueDate: DateTime.now().toISO() }));
+    setDueDateOptionsVisible(false);
+  }
+
+  function setDueDateTomorrow() {
+    dispatch(
+      addDueDate({ id: id, dueDate: DateTime.now().plus({ days: 1 }).toISO() })
+    );
+    setDueDateOptionsVisible(false);
+  }
+
+  function setDueDateNextWeek() {
+    dispatch(
+      addDueDate({
+        id: id,
+        dueDate: DateTime.now().plus({ weeks: 1 }).startOf("week").toISO(),
+      })
+    );
+    setDueDateOptionsVisible(false);
+  }
 
   return (
     <>
@@ -45,7 +56,9 @@ export default function DueDateForm({ id, dueDate }) {
         <Box sx={{ position: "relative" }}>
           <div className="dueDateBox">
             <p onClick={handleDueDateOptionsVisibility}>{`${
-              dueDate ? dueDateValue : "Добавить дату выполнения"
+              dueDate
+                ? `Срок: ${getDueDateValue(dueDate)}`
+                : "Добавить дату выполнения"
             }`}</p>
             {dueDate ? (
               <IconButton onClick={handleDeleteDueDate}>
@@ -57,16 +70,13 @@ export default function DueDateForm({ id, dueDate }) {
           <DueDateOptions
             dueDateOptionsVisible={dueDateOptionsVisible}
             handleCalendarVisibility={handleCalendarVisibility}
+            setDueDateToday={setDueDateToday}
+            setDueDateTomorrow={setDueDateTomorrow}
+            setDueDateNextWeek={setDueDateNextWeek}
           />
         </Box>
-
-        {/* <input
-          value={currentDate.toLocaleString()}
-          onClick={handleCalendarVisibility}
-          placeholder="Add due date"
-        /> */}
       </form>
-      {/* <div styles={{height: '20px'}} onClick={handleCalendarVisibility}>Add due date</div> */}
+
       <Calendar
         calendarVisible={calendarVisible}
         currentDate={currentDate}

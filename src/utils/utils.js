@@ -1,42 +1,43 @@
-import { months } from "./constants/calendarConstants"
+import { months } from "./constants/calendarConstants";
+import { DateTime } from "luxon";
 
 export function getTodosFromLS() {
   let todoHistory = [];
   if (localStorage["todoHistory"]) {
-    todoHistory =
-      JSON.parse(localStorage.getItem("todoHistory") || "") || [];
+    try {
+      todoHistory = JSON.parse(localStorage.getItem("todoHistory") || "") || [];
+    } catch (e) {
+      localStorage.removeItem("todoHistory");
+    }
   }
   return todoHistory;
 }
 
-export function saveTaskToLS(todo) {
-  const todoHistory = getTodosFromLS();
-  todoHistory.push(todo);
-  localStorage.setItem("todoHistory", JSON.stringify(todoHistory));
-}
-
-export function saveChangedTaskToLS(id, changedTodo) {
-  const todoHistory = getTodosFromLS();
-  console.log('todoHistory', todoHistory)
-  const filteredTodos = todoHistory.filter((todo) => todo.id !== id);
-  console.log('filteredTodos 1', filteredTodos)
-  filteredTodos.push(changedTodo);
-  console.log('filteredTodos 2', filteredTodos)
-  localStorage.setItem("todoHistory", JSON.stringify(todoHistory));
+export function saveTodosToLS(todos) {
+  localStorage.setItem("todoHistory", JSON.stringify(todos));
 }
 
 export function getDates(date) {
-  
-  const daysInMonth = date.daysInMonth
+  const daysInMonth = date.daysInMonth;
   const arr = [];
   for (let i = 1; i <= daysInMonth; i++) {
     arr.push(i);
   }
-  
-  return arr
+
+  return arr;
 }
 
 export const getMonthName = (index) => {
-    return months.filter((item, id) => id === index )[0]
-}
+  return months.filter((item, id) => id === index)[0];
+};
 
+export function getDueDateValue(dueDate) {
+  return (
+    dueDate &&
+    DateTime.fromISO(dueDate).toLocaleString({
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+    })
+  );
+}

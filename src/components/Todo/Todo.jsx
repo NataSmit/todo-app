@@ -1,19 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Todo.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   handleTodoInfoBoxClick,
   toggleComplete,
-  test
 } from "../../store/slices/TaskSlice";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import {
-  Checkbox,
-  ListItemButton,
-  ListItemIcon,
-  Typography,
-} from "@mui/material";
+import { Checkbox, ListItemIcon, Typography } from "@mui/material";
+import { getDueDateValue } from "../../utils/utils";
 
 export default function Todo({ todo }) {
   const dispatch = useDispatch();
@@ -28,9 +23,7 @@ export default function Todo({ todo }) {
 
   function handleTodoClick(e, id) {
     dispatch(handleTodoInfoBoxClick({ id }));
-    
   }
-
 
   return (
     <>
@@ -61,6 +54,12 @@ export default function Todo({ todo }) {
             >
               {todo.title}
             </Typography>
+          }
+          secondary={
+            <Typography
+              variant="caption"
+              component="p"
+            >{`Задачи ${getDueDateValue(todo.dueDate)}`}</Typography>
           }
         />
       </ListItem>
