@@ -1,13 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getTodosFromLS, saveTodosToLS } from "../../utils/utils";
 
-const todos = getTodosFromLS();
 
 export const todoSlice = createSlice({
   name: "todos",
   initialState: {
-    todos,
-    todoInfoBoxVisible: false,
+    todos: null,
     selectedTodo: null,
   },
   reducers: {
@@ -24,7 +22,7 @@ export const todoSlice = createSlice({
     },
     deleteTodo: (state, action) => {
       state.todos = state.todos.filter((todo) => todo.id !== action.payload.id);
-      state.todoInfoBoxVisible = false;
+      state.selectedTodo = false;
       saveTodosToLS(state.todos);
     },
     toggleComplete: (state, action) => {
@@ -41,20 +39,12 @@ export const todoSlice = createSlice({
       saveTodosToLS(state.todos);
     },
     handleTodoInfoBoxClick: (state, action) => {
-      if (!state.todoInfoBoxVisible) {
-        state.todoInfoBoxVisible = true;
-        state.selectedTodo = state.todos.find(
-          (todo) => todo.id === action.payload.id
-        );
+      if (state.selectedTodo && action.payload.id === state.selectedTodo.id) {
+        state.selectedTodo = null
       } else {
-        if (state.selectedTodo.id === action.payload.id) {
-          state.todoInfoBoxVisible = false;
-        } else {
-          state.selectedTodo = state.todos.find(
-            (todo) => todo.id === action.payload.id
-          );
-        }
+        state.selectedTodo = action.payload
       }
+      
     },
     changeTodo: (state, action) => {
       state.todos = state.todos.map((todo) => {
@@ -77,7 +67,7 @@ export const todoSlice = createSlice({
       state.todos = getTodosFromLS();
     },
     closeTodoInfoBox: (state) => {
-      state.todoInfoBoxVisible = false;
+      state.selectedTodo = null;
     },
     addComment: (state, action) => {
       state.todos = state.todos.map((todo) => {
@@ -85,7 +75,10 @@ export const todoSlice = createSlice({
           return { ...todo, comment: action.payload.comment };
         } else return todo;
       });
-      state.selectedTodo = {...state.selectedTodo, comment: action.payload.comment}
+      state.selectedTodo = {
+        ...state.selectedTodo,
+        comment: action.payload.comment,
+      };
       saveTodosToLS(state.todos);
     },
     addDueDate: (state, action) => {

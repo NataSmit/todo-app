@@ -21,8 +21,8 @@ export default function Todo({ todo }) {
     e.stopPropagation();
   }
 
-  function handleTodoClick(e, id) {
-    dispatch(handleTodoInfoBoxClick({ id }));
+  function handleTodoClick(e, todo) {
+    dispatch(handleTodoInfoBoxClick(todo));
   }
 
   return (
@@ -34,7 +34,7 @@ export default function Todo({ todo }) {
           mb: 1,
           backgroundColor: "white",
         }}
-        onClick={(e, id) => handleTodoClick(e, todo.id)}
+        onClick={(e, id) => handleTodoClick(e, todo)} ///// todo.id => todo
       >
         <ListItemIcon onClick={handleCheckboxClick}>
           <Checkbox

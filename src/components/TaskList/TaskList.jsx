@@ -12,12 +12,12 @@ export default function TaskList() {
 
   useEffect(() => {
     dispatch(getTodosFromLocalStorage());
-  }, [dispatch]);
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1, flexShrink: 1, flexBasis: "auto" }}>
       <List>
-        {todos.map((todo) => (
+        {todos && todos.map((todo) => (
           <Todo todo={todo} key={todo.id} />
         ))}
       </List>
